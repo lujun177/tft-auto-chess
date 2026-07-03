@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TFT Auto Chess - 卡牌推荐系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🎮 TFT 自动卡牌推荐系统</h1>
+                <p>基于胜率数据的云顶之弈智能推荐引擎</p>
+            </div>
+            <div class="header-status">
+                <span id="system-status" class="status-indicator loading">连接中...</span>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-content">
+                <button class="nav-button active" data-tab="recommendations">推荐</button>
+                <button class="nav-button" data-tab="analysis">分析</button>
+                <button class="nav-button" data-tab="tier-list">分级列表</button>
+                <button class="nav-button" data-tab="about">关于</button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Recommendations Tab -->
+            <section id="recommendations-tab" class="tab active">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>卡牌推荐</h2>
+                        <p>根据当前阵容和等级获取最优卡牌推荐</p>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="form-group">
+                            <label for="current-cards">当前卡牌</label>
+                            <textarea id="current-cards" placeholder="输入卡牌名称，使用逗号或空格分隔\n例如: ahri,akali" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="player-level">玩家等级</label>
+                                <select id="player-level">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5" selected>5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="top-n">推荐数量</label>
+                                <select id="top-n">
+                                    <option value="3">3</option>
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button id="get-recommendations-btn" class="btn btn-primary btn-lg">获取推荐</button>
+                        <button id="demo-btn" class="btn btn-secondary">演示</button>
+                    </div>
+
+                    <div id="recommendations-result" class="result-container" style="display: none;">
+                        <h3>推荐结果</h3>
+                        <div id="recommendations-list" class="recommendations-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analysis Tab -->
+            <section id="analysis-tab" class="tab">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>阵容分析</h2>
+                        <p>分析当前阵容的羁绊和同步性</p>
+                    </div>
+
+                    <div class="input-group">
+                        <div class="form-group">
+                            <label for="analysis-cards">当前阵容</label>
+                            <textarea id="analysis-cards" placeholder="输入卡牌名称，使用逗号或空格分隔" rows="3"></textarea>
+                        </div>
+
+                        <button id="analyze-btn" class="btn btn-primary btn-lg">分析阵容</button>
+                    </div>
+
+                    <div id="analysis-result" class="result-container" style="display: none;">
+                        <h3>分析结果</h3>
+                        <div class="analysis-grid">
+                            <div class="analysis-box">
+                                <h4>活跃羁绊</h4>
+                                <div id="active-synergies" class="synergy-list"></div>
+                            </div>
+                            <div class="analysis-box">
+                                <h4>即将完成</h4>
+                                <div id="near-completion" class="synergy-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tier List Tab -->
+            <section id="tier-list-tab" class="tab">
+                <div class="container">
+                    <div class="section-header">
+                        <h2>分级列表</h2>
+                        <p>所有卡牌按评级分类</p>
+                    </div>
+
+                    <div id="tier-list" class="tier-list"></div>
+                </div>
+            </section>
+
+            <!-- About Tab -->
+            <section id="about-tab" class="tab">
+                <div class="container">
+                    <div class="about-content">
+                        <h2>关于本系统</h2>
+                        <div class="about-section">
+                            <h3>功能特性</h3>
+                            <ul>
+                                <li>🎯 <strong>智能推荐</strong> - 基于最新胜率数据的推荐算法</li>
+                                <li>📊 <strong>数据驱动</strong> - 实时从 Tacticians.gg 获取数据</li>
+                                <li>🔄 <strong>羁绊分析</strong> - 自动识别和分析阵容羁绊</li>
+                                <li>⚡ <strong>快速响应</strong> - 毫秒级推荐生成</li>
+                            </ul>
+                        </div>
+
+                        <div class="about-section">
+                            <h3>推荐算法</h3>
+                            <p>系统综合考虑以下因素：</p>
+                            <ul>
+                                <li><strong>胜率权重 (50%)</strong> - 卡牌的总体胜率</li>
+                                <li><strong>羁绊权重 (30%)</strong> - 与当前阵容的羁绊匹配度</li>
+                                <li><strong>名次权重 (20%)</strong> - 卡牌的平均排名</li>
+                            </ul>
+                        </div>
+
+                        <div class="about-section">
+                            <h3>数据来源</h3>
+                            <ul>
+                                <li>📈 <strong>Tacticians.gg</strong> - 主要胜率数据源</li>
+                                <li>🎮 <strong>官方 Riot API</strong> - 卡牌信息和设定</li>
+                                <li>💾 <strong>本地缓存</strong> - 自动更新缓存(24小时)</li>
+                            </ul>
+                        </div>
+
+                        <div class="about-section">
+                            <h3>系统状态</h3>
+                            <div class="status-info">
+                                <p><strong>系统状态:</strong> <span id="about-status" class="status">检查中...</span></p>
+                                <p><strong>卡牌数据:</strong> <span id="about-champions-count">加载中...</span></p>
+                                <p><strong>推荐引擎:</strong> <span id="about-engine-status">加载中...</span></p>
+                            </div>
+                        </div>
+
+                        <div class="about-section">
+                            <h3>使用建议</h3>
+                            <ol>
+                                <li>输入你当前拥有的卡牌</li>
+                                <li>选择你的玩家等级</li>
+                                <li>点击"获取推荐"查看建议</li>
+                                <li>根据阵容分析考虑羁绊完成情况</li>
+                                <li>在分级列表中浏览其他卡牌信息</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>TFT Auto Chess © 2024 | 基于 YOLOv8 和胜率数据的推荐系统</p>
+                <button id="refresh-data-btn" class="btn btn-small">🔄 更新数据</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Indicator -->
+    <div id="loading" class="loading-spinner" style="display: none;">
+        <div class="spinner"></div>
+        <p>处理中...</p>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification" style="display: none;"></div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
