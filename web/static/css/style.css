@@ -38,11 +38,17 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .header-content h1 {
     font-size: 2rem;
     margin-bottom: 0.5rem;
+}
+
+.header-content p {
+    font-size: 0.95rem;
+    opacity: 0.9;
 }
 
 .header-status {
@@ -93,6 +99,10 @@ body {
     transition: all 0.3s ease;
 }
 
+.nav-button:hover {
+    color: var(--text-light);
+}
+
 .nav-button.active {
     color: var(--primary-color);
     border-bottom-color: var(--primary-color);
@@ -112,6 +122,12 @@ body {
 
 .tab.active {
     display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .container {
@@ -119,12 +135,27 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.section-header {
+    margin-bottom: 2rem;
+}
+
+.section-header h2 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-header p {
+    color: var(--text-muted);
 }
 
 .input-group {
     background-color: var(--dark-input);
     padding: 1.5rem;
     border-radius: 6px;
+    border: 1px solid var(--border-color);
     margin-bottom: 2rem;
 }
 
@@ -143,6 +174,7 @@ label {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
+    color: var(--text-light);
 }
 
 textarea, select {
@@ -153,11 +185,13 @@ textarea, select {
     border: 1px solid var(--border-color);
     border-radius: 4px;
     font-size: 1rem;
+    font-family: inherit;
 }
 
 textarea:focus, select:focus {
     outline: none;
     border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
 }
 
 .btn {
@@ -173,18 +207,21 @@ textarea:focus, select:focus {
 .btn-primary {
     background-color: var(--primary-color);
     color: white;
-    width: 100%;
-    margin-bottom: 0.5rem;
 }
 
 .btn-primary:hover {
     background-color: #0052a3;
+    transform: translateY(-2px);
 }
 
 .btn-secondary {
     background-color: var(--secondary-color);
     color: var(--dark-bg);
-    width: 100%;
+    margin-left: 0.5rem;
+}
+
+.btn-secondary:hover {
+    background-color: #00b386;
 }
 
 .btn-small {
@@ -192,8 +229,18 @@ textarea:focus, select:focus {
     font-size: 0.9rem;
 }
 
+.btn-lg {
+    width: 100%;
+    padding: 1rem;
+}
+
 .result-container {
     margin-top: 2rem;
+}
+
+.result-container h3 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
 }
 
 .recommendations-list {
@@ -208,12 +255,26 @@ textarea:focus, select:focus {
     border-radius: 6px;
     padding: 1.5rem;
     text-align: center;
+    transition: all 0.3s ease;
+}
+
+.recommendation-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 20px rgba(0, 102, 204, 0.2);
+    transform: translateY(-4px);
+}
+
+.recommendation-rank {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
 }
 
 .recommendation-name {
     font-size: 1.3rem;
     font-weight: bold;
-    margin: 0.5rem 0;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
 }
 
 .recommendation-score {
@@ -226,12 +287,20 @@ textarea:focus, select:focus {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
+    margin-top: 2rem;
 }
 
 .analysis-box {
     background-color: var(--dark-input);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 1.5rem;
+}
+
+.analysis-box h4 {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    color: var(--primary-color);
 }
 
 .synergy-list {
@@ -247,6 +316,12 @@ textarea:focus, select:focus {
     border-radius: 4px;
 }
 
+.empty-message {
+    color: var(--text-muted);
+    text-align: center;
+    padding: 2rem;
+}
+
 .tier-list {
     display: flex;
     flex-direction: column;
@@ -255,8 +330,17 @@ textarea:focus, select:focus {
 
 .tier-section {
     background-color: var(--dark-input);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 1.5rem;
+}
+
+.tier-header {
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
 }
 
 .tier-champions {
@@ -271,20 +355,80 @@ textarea:focus, select:focus {
     border-radius: 4px;
     padding: 0.75rem;
     text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.champion-badge:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 10px rgba(0, 102, 204, 0.2);
+}
+
+.about-content {
+    line-height: 1.8;
+}
+
+.about-content h2 {
+    margin-bottom: 2rem;
+    font-size: 2rem;
 }
 
 .about-section {
     margin-bottom: 2rem;
     padding: 1.5rem;
     background-color: var(--dark-input);
+    border-left: 4px solid var(--primary-color);
     border-radius: 4px;
+}
+
+.about-section h3 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.about-section ul, .about-section ol {
+    margin-left: 1.5rem;
+}
+
+.about-section li {
+    margin-bottom: 0.5rem;
+}
+
+.status-info {
+    background-color: var(--dark-bg);
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1rem;
+}
+
+.status-info p {
+    margin-bottom: 0.75rem;
+}
+
+.status {
+    font-weight: 600;
+    color: var(--success-color);
 }
 
 .footer {
     background-color: var(--dark-card);
     border-top: 1px solid var(--border-color);
-    padding: 1.5rem;
+    padding: 1.5rem 2rem;
     text-align: center;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-content p {
+    color: var(--text-muted);
 }
 
 .loading-spinner {
@@ -298,6 +442,7 @@ textarea:focus, select:focus {
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    flex-direction: column;
 }
 
 .spinner {
@@ -313,6 +458,11 @@ textarea:focus, select:focus {
     to { transform: rotate(360deg); }
 }
 
+.loading-spinner p {
+    margin-top: 1rem;
+    color: var(--text-light);
+}
+
 .notification {
     position: fixed;
     top: 20px;
@@ -321,7 +471,9 @@ textarea:focus, select:focus {
     border-radius: 4px;
     background-color: var(--success-color);
     color: var(--dark-bg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     z-index: 999;
+    animation: slideIn 0.3s ease;
 }
 
 .notification.error {
@@ -329,20 +481,55 @@ textarea:focus, select:focus {
     color: white;
 }
 
+.notification.warning {
+    background-color: var(--warning-color);
+    color: var(--dark-bg);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
+        text-align: center;
+        gap: 1rem;
     }
-    
+
+    .nav-content {
+        flex-wrap: wrap;
+    }
+
+    .nav-button {
+        flex: 1 0 50%;
+    }
+
+    .main-content {
+        padding: 1rem;
+    }
+
     .form-row {
         grid-template-columns: 1fr;
     }
-    
+
     .recommendations-list {
         grid-template-columns: 1fr;
     }
-    
+
     .analysis-grid {
         grid-template-columns: 1fr;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 1rem;
     }
 }

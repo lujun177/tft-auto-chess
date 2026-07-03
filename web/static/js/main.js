@@ -25,10 +25,8 @@ function setupEventListeners() {
 
 function handleTabClick(e) {
     const tabName = e.target.dataset.tab;
-    
     document.querySelectorAll('.nav-button').forEach(btn => btn.classList.remove('active'));
     e.target.classList.add('active');
-
     document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
     document.getElementById(`${tabName}-tab`).classList.add('active');
 }
@@ -37,7 +35,6 @@ async function checkSystemHealth() {
     try {
         const response = await fetch(`${API_URL}/health`);
         const data = await response.json();
-        
         const statusEl = document.getElementById('system-status');
         if (data.system) {
             statusEl.textContent = '就绪';
@@ -55,8 +52,8 @@ async function updateSystemInfo() {
     try {
         const response = await fetch(`${API_URL}/system/info`);
         const data = await response.json();
-        
         document.getElementById('about-status').textContent = '正常';
+        document.getElementById('about-status').style.color = 'var(--success-color)';
         document.getElementById('about-champions-count').textContent = `${data.winrate_data_count} 个卡牌`;
         document.getElementById('about-engine-status').textContent = data.recommendation_engine;
     } catch (error) {
@@ -69,30 +66,21 @@ async function getRecommendations() {
         showNotification('系统还未就绪', 'warning');
         return;
     }
-
     const cardsInput = document.getElementById('current-cards').value;
     const level = parseInt(document.getElementById('player-level').value);
     const topN = parseInt(document.getElementById('top-n').value);
-
     if (!cardsInput.trim()) {
         showNotification('请输入卡牌名称', 'warning');
         return;
     }
-
     const currentCards = parseCardInput(cardsInput);
     showLoading(true);
-
     try {
         const response = await fetch(`${API_URL}/recommendations`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                current_cards: currentCards,
-                level: level,
-                top_n: topN
-            })
+            body: JSON.stringify({ current_cards: currentCards, level: level, top_n: topN })
         });
-
         const data = await response.json();
         if (data.success) {
             displayRecommendations(data.recommendations);
@@ -145,17 +133,14 @@ async function analyzeComposition() {
         showNotification('请输入卡牌名称', 'warning');
         return;
     }
-
     const currentCards = parseCardInput(cardsInput);
     showLoading(true);
-
     try {
         const response = await fetch(`${API_URL}/synergies`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ current_cards: currentCards })
         });
-
         const data = await response.json();
         if (data.success) {
             displayAnalysis(data);
@@ -171,19 +156,16 @@ async function analyzeComposition() {
 function displayAnalysis(data) {
     const activeSynergies = document.getElementById('active-synergies');
     const nearCompletion = document.getElementById('near-completion');
-
-    activeSynergies.innerHTML = Object.entries(data.active_synergies).length === 0 ?
+    activeSynergies.innerHTML = Object.keys(data.active_synergies).length === 0 ?
         '<div class="empty-message">暂无活跃羁绊</div>' :
         Object.entries(data.active_synergies).map(([trait, count]) => `
             <div class="synergy-item"><div>${trait}</div><div>已激活: ${count}个</div></div>
         `).join('');
-
     nearCompletion.innerHTML = data.near_completion.length === 0 ?
         '<div class="empty-message">暂无接近完成的羁绊</div>' :
         data.near_completion.map(item => `
             <div class="synergy-item"><div>${item.trait}</div><div>当前: ${item.current}个, 下一级: ${item.next}个</div></div>
         `).join('');
-
     document.getElementById('analysis-result').style.display = 'block';
 }
 
@@ -191,9 +173,7 @@ async function loadTierList() {
     try {
         const response = await fetch(`${API_URL}/tier-list`);
         const data = await response.json();
-        if (data.success) {
-            displayTierList(data.tiers);
-        }
+        if (data.success) displayTierList(data.tiers);
     } catch (error) {
         console.error('Failed to load tier list:', error);
     }
@@ -217,7 +197,6 @@ function displayTierList(tiers) {
 async function refreshData() {
     showLoading(true);
     showNotification('正在更新数据...', 'warning');
-
     try {
         const response = await fetch(`${API_URL}/refresh-data`, { method: 'POST' });
         const data = await response.json();
